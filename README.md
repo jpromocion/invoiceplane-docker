@@ -1,35 +1,46 @@
 # InvoicePlane en Docker
 
-Como instalarlo con este archivo.
+Usar InvoicePlane (1.7.1) pero dockerizado.
+La instalacion sigue siendo un linux con un php 8.3 con apache, y una BD mariadb 11.
+- Contenedor 1: aplicacion
+- Contenedor 2: BD maridb. Con un volumen sobre esta para poder persistir los datos.
 
-OJO:
-- que para la primera instalacion: "/invoiceplane-docker/app/invoiceplane/"
-  - "ipconfig.php.example" lo copio y renombro como "ipconfig.php"
-  - por los motivos que se veran, esto no se crea en el respositorio (de hecho esta en el .gitignore de invoiceplane por defecto para que no se suba nunca)
-- Cuando levantes y accedas a la url de InvoicePlane desplegada, tienes que rellenar la  configuracion para ella, eso reemplaza datos importantes en "ipconfig.php" de dentro del contenedor. Tras completar esto es necesario llevar ese archivo a los fuentes que se copian al entrar "/app/invoiceplane/ipconfig.php"
+## Instalar correctamente
+
+Primera instalacion:
+- "/app/invoiceplane/", "ipconfig.php.example" lo copias y renombras como "ipconfig.php" en la misma ruta
+- Levantas docker y accedes a http://localhost:8080
+  - Hay debes completar la configuracion propia de la aplicacion InvoicePlane
+    - NOTA: los datos de la BD estan en docker-compose.yml (deberian cambiar los defecto que salen hay)
+      - Nombre del Host: db
+      - Puerto: 3306
+      - Nombre del usuario: ipuser
+      - Contraseña: ippassword
+      - Base de datos: invoiceplane
+  - Esto modifica el "ipconfig.php" actualizando variables variables para que no se vuelve a lanzar el setup asi como una key
+- Si paras y vuelves a levantar, se machaca el "ipconfig.php" con el plano, por lo que al acceder a la url, vuelve a pedir toda la configuración y genera otros key, que no permiten persistencia.
+- Asi que tras configurar en primer lanzamiento, copias el archivo "ipconfig.php" del docker a tu host:
 ```bash
-# copiar el del contenedor que fue actualizado y reemplazar el que hemos puesto en el docker
 sudo docker cp invoiceplane-app:/var/www/html/ipconfig.php ./app/invoiceplane/ipconfig.php
 ```
-- Entonces si, cuando pares el contenedor y vuelvas a entrar, al acceder a la url, no te pedira InvoicePlane que vuelvas a hacer la configuracion
-- Sino haces eso, cada vez que levantas el contenedor y accedes a la url de InvoicePlane, te pide hacer la configuracion de nuevo, y no se ven los datos persistidos de la BD
+- Entonces si, puedes parar y volver a levantar, que ahora si va a copiar el "ipconfig.php" ya modificado con los identificadores apropiados, y al acceder a http://localhost:8080 te mandara a login/pass de aplicación correctamente
+
+> Por esto en .gitignore de invoiceplane esta para que no se suba este ipconfig.php nunca
 
 
-Revisa en "docker-compose.yml" las variables de la BD asi como el usu/pass para poner el que quieras.
-
-
-## Levantarlo:
+## Levantar docker:
 ```bash
 sudo docker compose up -d --build
 ```
 
 
-## Para pararlo:
+## Parar docker:
 ```bash
 sudo docker compose down
 
-# Con -v se limpia los volumnes anteriores... para hacerlo todo de 0. Nos borraria la BBDD y datos persistidos
+# Con -v se limpia los volumnes anteriores... para hacerlo todo de 0. Nos borraria la BD y datos persistidos
 sudo docker compose down -v
 ```
 
-
+## Otra version de InvoicePlane
+Para ello habria que sustituir los archivos de app/invoiceplane por los de la nueva versión.
