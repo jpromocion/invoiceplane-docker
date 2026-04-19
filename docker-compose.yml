@@ -1,0 +1,30 @@
+services:
+  db:
+    image: mariadb:11
+    container_name: invoiceplane-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: invoiceplane
+      MARIADB_USER: ipuser
+      MARIADB_PASSWORD: ippassword
+    volumes:
+      - db_data:/var/lib/mysql
+
+  app:
+    build:
+      context: ./app
+    container_name: invoiceplane-app
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    volumes:
+      - uploads_data:/var/www/html/uploads
+      - logs_data:/var/www/html/application/logs
+
+volumes:
+  db_data:
+  uploads_data:
+  logs_data:
