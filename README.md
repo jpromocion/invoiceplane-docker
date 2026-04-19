@@ -5,7 +5,7 @@ Como instalarlo con este archivo.
 OJO:
 - que para la primera instalacion: "/invoiceplane-docker/app/invoiceplane/"
   - "ipconfig.php.example" lo copio y renombro como "ipconfig.php"
-  - por los motivos que se veran, esto no se crea en el respositorio
+  - por los motivos que se veran, esto no se crea en el respositorio (de hecho esta en el .gitignore de invoiceplane por defecto para que no se suba nunca)
 - Cuando levantes y accedas a la url de InvoicePlane desplegada, tienes que rellenar la  configuracion para ella, eso reemplaza datos importantes en "ipconfig.php" de dentro del contenedor. Tras completar esto es necesario llevar ese archivo a los fuentes que se copian al entrar "/app/invoiceplane/ipconfig.php"
 ```bash
 # copiar el del contenedor que fue actualizado y reemplazar el que hemos puesto en el docker
